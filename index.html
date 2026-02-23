@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do</title>
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            max-width: 600px;
+            margin: 50px;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1{
+            color: #333;
+            text-align: center;
+        }
+        .input-body{
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        input{
+            flex: 1;
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+        }
+        button{
+            padding: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            background-color: rgb(7, 169, 115);
+            border: 1px solid white;
+            color: white;
+            border-radius: 10%;
+        }
+        button:hover{
+            background-color: rgb(12, 95, 67);
+        }
+        .delete-btn{
+            background-color: crimson;
+            color: white;
+            padding: 5px;
+            font-size: 14px;
+        }
+        .delete-btn:hover{
+            background-color: rgb(141, 12, 38);
+        }
+        ul{
+            list-style: none;
+            padding: 0;
+
+        }
+        li{
+            background-color: rgb(255, 255, 255);
+            padding: 10px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+          .completed{
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        .todo-text{
+            flex:1;
+        }
+    </style>
+</head>
+<body>
+    <h1>To-do List</h1>
+    <div class="input-body">
+        <input type="text" id="todoInput" placeholder="Add a new Task"/>
+        <button onclick="addToDo()"> Add </button>
+    </div>
+    <ul id="toDoList"></ul>    
+
+    <script>
+        let todos=[];
+        function addToDo(){
+            const input = document.getElementById("todoInput");
+            const text = input.value.trim();
+            if (text==='') return;
+            todos.push({
+                id:Date.now(),
+                text: text,
+                completed: false
+            });
+            input.value='';
+            render();
+        }
+        function deleteTodo(id){
+            todos = todos.filter(todo => todo.id!==id);
+            render();
+        }
+        function toggleTodo(id){
+            todos = todos.map(todo=>
+                todo.id === id ? {...todo, completed: !todo.completed} :todo
+            );
+            render();
+        }
+        function render(){
+            const list = document.getElementById('toDoList');
+            list.innerHTML = todos.map(
+                todo => 
+                `
+                <li>
+                    <input 
+                    type = "checkbox"
+                    ${todo.completed?'checked':''}
+                    onchange="toggleTodo(${todo.id})"
+                    />
+                    <span class="todo-text ${todo.completed? 'completed':''}"> ${todo.text} </span>
+                    <button class="delete-btn"
+                    onclick = "deleteTodo(${todo.id})"> Delete </button>
+                </li>
+                `);
+        }
+        
+
+        document.getElementById('todoInput')
+        .addEventListener('keypress',(e)=>{
+            if(e.key === 'Enter') addToDo();
+        })
+        render();
+    </script>
+</body>
+</html>
